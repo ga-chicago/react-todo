@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import Todo from './Todo.js';
+import TodoForm from './TodoForm.js'
 import logo from './logo.svg';
 import './App.css';
 
@@ -7,25 +9,20 @@ class App extends Component {
   constructor(){
     super()
     this.state = {data: [
-                          {name:"Groceries", complete: false},
+                          {name:"Groceries", complete: true},
                           {name:"Go to Bank", complete: false}
-                        ], inputValue: ""}
+                        ]}
   }
 
   render() {
+    console.log(this.props.key)
     return (
       <div>
-        <form onSubmit={this.handleSubmit}>
-          <input placeholder="Task..." value={this.state.inputValue} onChange={this.updateInputValue}/>
-          <input type="submit" value="create"/>
-        </form>
+        <TodoForm onTodoSubmit={this.createTodo}/>
         <ul>
           {this.state.data.map((todo, index) => {
             return (
-              <li key={index}>
-                <input type="checkbox"/>
-                <span>{todo.name}</span>
-              </li>
+              <Todo task={todo.name} complete={todo.complete} onTodoClick={this.checkTodo} key={index} index={index}/>
             )
           })}
         </ul>
@@ -33,19 +30,19 @@ class App extends Component {
     );
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
+  checkTodo = (index) => {
     let updatedState = this.state;
-    updatedState.data.push({name: this.state.inputValue, complete: false})
-    updatedState.inputValue = "";
+    updatedState.data[index].complete = !updatedState.data[index].complete;
+    this.setState(updatedState);
+    console.log(this.state)
+  }
+
+  createTodo = (task) => {
+    let updatedState = this.state;
+    updatedState.data.push({name:task, complete: false});
     this.setState(updatedState);
   }
 
-  updateInputValue = (e) => {
-    let updatedState = this.state;
-    updatedState.inputValue = e.target.value;
-    this.setState(updatedState);
-  }
 }
 
 export default App;
